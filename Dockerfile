@@ -1,4 +1,4 @@
-FROM php:5.6.15-apache
+FROM php:7-apache
 
 MAINTAINER Michaël Rivet <rivet.michael@gmail.com>
 
