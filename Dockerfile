@@ -1,27 +1,33 @@
 FROM php:5.6.15-apache
+
 MAINTAINER Michaël Rivet <rivet.michael@gmail.com>
 
-# Add php extensions
-#   mcrypt, gd
+# Add php extensions and needed apps
 RUN apt-get update && apt-get install -y \
       libfreetype6-dev \
       libjpeg62-turbo-dev \
       libmcrypt-dev \
-      libpng12-dev
-RUN docker-php-ext-install mcrypt gd pdo_mysql
+      libpng12-dev \
+      mysql-client \
+      ssmtp
+RUN docker-php-ext-install mcrypt gd pdo_mysql mbstring
 
 # Directory for SSL key / cert
 RUN mkdir -p /etc/apache2/external
 RUN chown -R www-data:www-data /etc/apache2/external
 
 # Adding vhost file
-ADD vhost.conf /etc/apache2/sites-available/10-vhost.conf
-ADD ssl-vhost.conf /etc/apache2/sites-available/11-ssl-vhost.conf
+ADD apache/vhost.conf /etc/apache2/sites-available/10-vhost.conf
+ADD apache/ssl-vhost.conf /etc/apache2/sites-available/11-ssl-vhost.conf
 RUN ln -s /etc/apache2/sites-available/10-vhost.conf /etc/apache2/sites-enabled/
 RUN ln -s /etc/apache2/sites-available/11-ssl-vhost.conf /etc/apache2/sites-enabled/
 
 # Adding php conf file
 ADD php.ini /usr/local/etc/php/conf.d/zzz-php.ini
+
+# Activating sendmail
+RUN echo "sendmail_path = /usr/sbin/ssmtp -t" >> /usr/local/etc/php/conf.d/zzz-php.ini
+RUN echo "mailhub=mail:25\nUseTLS=NO\nFromLineOverride=YES" > /etc/ssmtp/ssmtp.conf
 
 # Set Apache environment variables (can be changed on docker run with -e)
 ENV APACHE_RUN_USER www-data
