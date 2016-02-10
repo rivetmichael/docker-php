@@ -38,11 +38,6 @@ ENV APACHE_SERVERNAME localhost
 ENV APACHE_SERVERALIAS docker.localhost
 ENV APACHE_DOCUMENTROOT /var/www/html
 
-# Install Magerun
-RUN curl -sS http://files.magerun.net/n98-magerun-latest.phar -o /usr/bin/n98-magerun.phar
-RUN chmod +x /usr/bin/n98-magerun.phar
-RUN mv /usr/bin/n98-magerun.phar /usr/bin/magerun
-
 # Expose useful port
 EXPOSE 80
 EXPOSE 443
