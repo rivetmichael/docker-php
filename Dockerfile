@@ -29,6 +29,12 @@ ADD php.ini /usr/local/etc/php/conf.d/zzz-php.ini
 RUN echo "sendmail_path = /usr/sbin/ssmtp -t" >> /usr/local/etc/php/conf.d/zzz-php.ini
 RUN echo "mailhub=mail:25\nUseTLS=NO\nFromLineOverride=YES" > /etc/ssmtp/ssmtp.conf
 
+# Install xdebug
+RUN yes | pecl install xdebug \
+    && echo "zend_extension=$(find /usr/local/lib/php/extensions/ -name xdebug.so)" > /usr/local/etc/php/conf.d/xdebug.ini \
+    && echo "xdebug.remote_enable=on" >> /usr/local/etc/php/conf.d/xdebug.ini \
+    && echo "xdebug.remote_autostart=off" >> /usr/local/etc/php/conf.d/xdebug.ini
+
 # Set Apache environment variables (can be changed on docker run with -e)
 ENV APACHE_RUN_USER www-data
 ENV APACHE_RUN_GROUP www-data
