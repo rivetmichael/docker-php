@@ -16,6 +16,9 @@ RUN docker-php-ext-install mcrypt gd pdo_mysql mbstring
 RUN mkdir -p /etc/apache2/external
 RUN chown -R www-data:www-data /etc/apache2/external
 
+# Activating mod rewrite
+RUN a2enmod rewrite
+
 # Adding vhost file
 ADD apache/vhost.conf /etc/apache2/sites-available/10-vhost.conf
 ADD apache/ssl-vhost.conf /etc/apache2/sites-available/11-ssl-vhost.conf
